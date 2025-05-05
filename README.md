@@ -167,6 +167,3 @@ When prompted, enter the password `yourpassword`.
 
 ---
 
-## 📄 License
-
-MIT
