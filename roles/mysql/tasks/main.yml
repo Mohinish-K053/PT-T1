@@ -1,0 +1,16 @@
+---
+- name: Install MySQL
+  apt:
+    name: "{{ mysql_package }}"
+    state: present
+
+- name: Configure MySQL to listen on all interfaces
+  lineinfile:
+    path: "{{ mysql_conf_path }}"
+    regexp: "^bind-address"
+    line: "bind-address = {{ mysql_bind_address }}"
+
+- name: Restart MySQL
+  service:
+    name: mysql
+    state: restarted

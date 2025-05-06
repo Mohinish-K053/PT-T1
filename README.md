@@ -1,7 +1,7 @@
 
 # Ansible Setup: MySQL, PostgreSQL, and NGINX with Public Access
 
-This project automates the installation and configuration of **MySQL**, **PostgreSQL**, and **NGINX** using **Ansible** on an Ubuntu server. It ensures all services are accessible remotely for development or testing purposes.
+This project automates the installation and configuration of **MySQL**, **PostgreSQL**, and **NGINX** using **Ansible** roles and inventory. It ensures all services are accessible remotely for development or testing purposes.
 
 ---
 
@@ -33,74 +33,23 @@ sudo apt install ansible -y
 
 ## 📁 Setup Project Folder
 
+Unzip the provided `ansible-setup.zip` or clone your GitHub repo, then run:
+
 ```bash
-mkdir <folder_name>
-cd <folder_name>
-vi install.yml
+cd ansible-setup
 ```
 
-### Paste the following in `install.yml`:
+The structure is as follows:
 
-```yaml
----
-- name: Install MySQL, PostgreSQL, and NGINX
-  hosts: localhost
-  become: yes
-  connection: local
-
-  tasks:
-    - name: Update apt
-      apt:
-        update_cache: yes
-
-    - name: Install MySQL
-      apt:
-        name: mysql-server
-        state: present
-
-    - name: Configure MySQL to listen on all interfaces
-      lineinfile:
-        path: /etc/mysql/mysql.conf.d/mysqld.cnf
-        regexp: '^bind-address'
-        line: 'bind-address = 0.0.0.0'
-
-    - name: Restart MySQL
-      service:
-        name: mysql
-        state: restarted
-
-    - name: Install PostgreSQL
-      apt:
-        name: postgresql
-        state: present
-
-    - name: Set PostgreSQL to listen on all addresses
-      lineinfile:
-        path: /etc/postgresql/*/main/postgresql.conf
-        regexp: '^#?listen_addresses'
-        line: "listen_addresses = '*'"
-
-    - name: Allow external connections to PostgreSQL
-      blockinfile:
-        path: /etc/postgresql/*/main/pg_hba.conf
-        block: |
-          host    all             all             0.0.0.0/0               md5
-
-    - name: Restart PostgreSQL
-      service:
-        name: postgresql
-        state: restarted
-
-    - name: Install NGINX
-      apt:
-        name: nginx
-        state: present
-
-    - name: Start and enable NGINX
-      service:
-        name: nginx
-        state: started
-        enabled: yes
+```
+ansible-setup/
+├── inventory.ini
+├── install.yml
+└── roles/
+    ├── common/
+    ├── mysql/
+    ├── postgresql/
+    └── nginx/
 ```
 
 ---
@@ -108,7 +57,7 @@ vi install.yml
 ## 🚀 Run the Ansible Playbook
 
 ```bash
-ansible-playbook install.yml
+ansible-playbook -i inventory.ini install.yml
 ```
 
 ---
@@ -166,4 +115,3 @@ ALTER ROLE root WITH SUPERUSER;
 When prompted, enter the password `yourpassword`.
 
 ---
-

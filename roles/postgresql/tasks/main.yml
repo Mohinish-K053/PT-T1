@@ -1,0 +1,22 @@
+---
+- name: Install PostgreSQL
+  apt:
+    name: "{{ postgresql_package }}"
+    state: present
+
+- name: Set PostgreSQL to listen on all addresses
+  lineinfile:
+    path: "{{ postgresql_conf_path }}"
+    regexp: "^#?listen_addresses"
+    line: "listen_addresses = '*'"
+
+- name: Allow external connections to PostgreSQL
+  blockinfile:
+    path: "{{ postgresql_hba_path }}"
+    block: |
+      host    all             all             0.0.0.0/0               md5
+
+- name: Restart PostgreSQL
+  service:
+    name: postgresql
+    state: restarted

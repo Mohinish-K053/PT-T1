@@ -1,0 +1,9 @@
+---
+- name: Install MySQL, PostgreSQL, and NGINX
+  hosts: localhost
+  become: yes
+  roles:
+    - common
+    - mysql
+    - postgresql
+    - nginx
